@@ -5,12 +5,12 @@ DIR=$(dirname ${SOURCE})
 
 php_bin=`which php`
 phpcs_bin=`which phpcs`
-if [ ! -x $php_bin ]; then
+if [ -z "$php_bin" ] || [ ! -x $php_bin ]; then
     echo "php not found" >&2
     exit 2
 fi
 
-if [ ! -x $phpcs_bin ]; then
+if [ -z "$phpcs_bin" ] ||  [ ! -x $phpcs_bin ]; then
     echo "phpcs not found" >&2
     exit 2
 fi
