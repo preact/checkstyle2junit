@@ -19,8 +19,11 @@
         "issues": "https://github.com/i-ekho/checkstyle2junit/issues",
         "source": "https://github.com/i-ekho/checkstyle2junit"
     },
+    "suggest": {
+        "squizlabs/php_codesniffer": "dev-master"
+    },
     "require": {
-        "php": ">=5.1.2"
+        "php": ">=5.3.0"
     },
     "bin": [
         "scripts/checkstyle2junit",
