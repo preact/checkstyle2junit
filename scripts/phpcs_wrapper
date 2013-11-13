@@ -6,11 +6,13 @@ DIR=$(dirname ${SOURCE})
 php_bin=`which php`
 phpcs_bin=`which phpcs`
 if [ ! -x $php_bin ]; then
-    echo "php not found"
+    echo "php not found" >&2
+    exit 2
 fi
 
 if [ ! -x $phpcs_bin ]; then
-    echo "phpcs not found"
+    echo "phpcs not found" >&2
+    exit 2
 fi
 
 if echo $@ | grep 'report-checkstyle=' > /dev/null; then
