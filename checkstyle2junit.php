@@ -83,13 +83,13 @@ foreach ($checkstyleXml as $file) {
 
     foreach ($file as $error) {
         $case = $fileSuite->addChild('testcase');
-        $case->addAttribute('name', $error['source']);
+        $case->addAttribute('name', preg_replace('@[^a-zA-Z0-9]@', ' ', $error['source']));
         $case->addAttribute('file', $file['name']);
         $case->addAttribute('line', $error['line']);
         $case->addAttribute('column', $error['column']);
         $failure = $case->addChild(
             'failure',
-            $error['message'] . PHP_EOL . PHP_EOL . $file['name'] . ':' . $error['line'] . ':' . $error['column']
+            $error['source'] . PHP_EOL . $error['message'] . PHP_EOL . PHP_EOL . $file['name'] . ':' . $error['line'] . ':' . $error['column']
         );
         $failure->addAttribute('type', $error['source']);
     }
