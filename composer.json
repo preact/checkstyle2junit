@@ -1,0 +1,29 @@
+{
+    "name": "i-ekho/checkstyle2junit",
+    "description": "tool for converting checkstyle xml report to junit xml report.",
+    "type": "library",
+    "keywords": [
+        "checkstyle",
+        "junit",
+        "phpunit"
+    ],
+    "homepage": "https://github.com/i-ekho/checkstyle2junit",
+    "license": "LGPLv3",
+    "authors": [
+        {
+            "name": "Boris Gorbylev",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/i-ekho/checkstyle2junit/issues",
+        "source": "https://github.com/i-ekho/checkstyle2junit"
+    },
+    "require": {
+        "php": ">=5.1.2"
+    },
+    "bin": [
+        "scripts/checkstyle2junit",
+        "scripts/phpcs_wrapper"
+    ]
+}

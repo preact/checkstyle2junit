@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+
+if (is_file(__DIR__.'/../checkstyle2junit.php') === true) {
+    include_once __DIR__.'/../checkstyle2junit.php';
+} else {
+    include_once 'PHP/checkstyle2junit.php';
+}

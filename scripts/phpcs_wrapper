@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+SOURCE=$(readlink -f $0); while [ -h ${SOURCE} ]; do SOURCE=$(readlink -f ${SOURCE}); done
+DIR=$(dirname ${SOURCE})
+
+php_bin=`which php`
+phpcs_bin=`which phpcs`
+if [ ! -x $php_bin ]; then
+    echo "php not found"
+fi
+
+if [ ! -x $phpcs_bin ]; then
+    echo "phpcs not found"
+fi
+
+if echo $@ | grep 'report-checkstyle=' > /dev/null; then
+    cs_report_file=`echo $@ | grep -oP 'report-checkstyle=[^ ]+' | sed -e 's/report-checkstyle=//'`
+fi
+echo $cs_report_file
+
+$phpcs_bin $@
+
+phpcs_ret_code=$?
+
+case "$phpcs_ret_code" in
+    "0")
+        echo 'csc ok'
+    ;;
+    "1")
+        if [ -n "$cs_report_file" ]; then
+            j_report_file=$(dirname $cs_report_file)/junit_$(basename $cs_report_file)
+            $php_bin ${DIR}/checkstyle2junit $cs_report_file $j_report_file
+            echo "JUnit report saved to $j_report_file"
+        fi
+    ;;
+    *)
+        exit $phpcs_ret_code
+    ;;
+esac
