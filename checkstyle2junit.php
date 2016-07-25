@@ -71,17 +71,19 @@ $mainSuite->addAttribute('failures', 0);
 foreach ($checkstyleXml as $file) {
     $mainSuite['tests'] += count($file);
     $mainSuite['assertions'] += count($file);
-    $mainSuite['failures'] += count($file);
 
     $fileSuite = $mainSuite->addChild('testsuite');
-    $fileSuite->addAttribute('errors', 0);
-    $fileSuite->addAttribute('name', basename($file['name'], '.php'));
-    $fileSuite->addAttribute('file', $file['name']);
-    $fileSuite->addAttribute('tests', count($file));
-    $fileSuite->addAttribute('assertions', count($file));
-    $fileSuite->addAttribute('failures', count($file));
 
+    $failures = 0;
     foreach ($file as $error) {
+        if ($error['severity'] == 'info') {
+            $mainSuite['failures']--;
+            continue;
+        }
+        
+        $failures++;
+        $mainSuite['failures']++;
+
         $case = $fileSuite->addChild('testcase');
         $case->addAttribute('name', preg_replace('@[^a-zA-Z0-9]@', ' ', $error['source']));
         $case->addAttribute('file', $file['name']);
@@ -94,6 +96,12 @@ foreach ($checkstyleXml as $file) {
         $failure->addAttribute('type', $error['source']);
     }
 
+    $fileSuite->addAttribute('errors', 0);
+    $fileSuite->addAttribute('name', basename($file['name'], '.php'));
+    $fileSuite->addAttribute('file', $file['name']);
+    $fileSuite->addAttribute('tests', count($file));
+    $fileSuite->addAttribute('assertions', count($file));
+    $fileSuite->addAttribute('failures', $failures);
 }
 
 if ($outFile) {
