@@ -29,6 +29,10 @@ if (!is_readable($inFile)) {
     exit(1);
 }
 
+$file_prefix = isset($_SERVER['TRIM_PREFIX'])
+    ? $_SERVER['TRIM_PREFIX']
+    : '';
+
 $outFile = empty($_SERVER['argv'][2]) ? null : $_SERVER['argv'][2];
 
 if ($outFile) {
@@ -74,6 +78,11 @@ foreach ($checkstyleXml as $file) {
 
     $fileSuite = $mainSuite->addChild('testsuite');
 
+
+    $filename = (substr($file['name'], 0, strlen($file_prefix)) == $file_prefix)
+        ? substr($file['name'], strlen($file_prefix))
+        : $file['name']; 
+
     $failures = 0;
     foreach ($file as $error) {
         if ($error['severity'] == 'info') {
@@ -84,21 +93,24 @@ foreach ($checkstyleXml as $file) {
         $failures++;
         $mainSuite['failures']++;
 
+        echo $filename.PHP_EOL;
+        exit;
+
         $case = $fileSuite->addChild('testcase');
         $case->addAttribute('name', preg_replace('@[^a-zA-Z0-9]@', ' ', $error['source']));
-        $case->addAttribute('file', $file['name']);
+        $case->addAttribute('file', $filename);
         $case->addAttribute('line', $error['line']);
         $case->addAttribute('column', $error['column']);
         $failure = $case->addChild(
             'failure',
-            $error['source'] . PHP_EOL . $error['message'] . PHP_EOL . PHP_EOL . $file['name'] . ':' . $error['line'] . ':' . $error['column']
+            $error['source'] . PHP_EOL . $error['message'] . PHP_EOL . PHP_EOL . $filename . ':' . $error['line'] . ':' . $error['column']
         );
         $failure->addAttribute('type', $error['source']);
     }
 
     $fileSuite->addAttribute('errors', 0);
-    $fileSuite->addAttribute('name', basename($file['name'], '.php'));
-    $fileSuite->addAttribute('file', $file['name']);
+    $fileSuite->addAttribute('name', basename($filename));
+    $fileSuite->addAttribute('file', $filename);
     $fileSuite->addAttribute('tests', count($file));
     $fileSuite->addAttribute('assertions', count($file));
     $fileSuite->addAttribute('failures', $failures);
