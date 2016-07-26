@@ -93,9 +93,6 @@ foreach ($checkstyleXml as $file) {
         $failures++;
         $mainSuite['failures']++;
 
-        echo $filename.PHP_EOL;
-        exit;
-
         $case = $fileSuite->addChild('testcase');
         $case->addAttribute('name', preg_replace('@[^a-zA-Z0-9]@', ' ', $error['source']));
         $case->addAttribute('file', $filename);
